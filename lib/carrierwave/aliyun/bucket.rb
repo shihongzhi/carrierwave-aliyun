@@ -96,7 +96,7 @@ module CarrierWave
         url = ''
         if opts[:thumb]
           thumb_path = [path, opts[:thumb]].join('')
-          url = img_client.bucket_get_object_share_link(thumb_path, 3600)
+          url = oss_client.bucket_get_object_share_link(thumb_path, 3600)
         else
           url = oss_client.bucket_get_object_share_link(path, 3600)
         end
@@ -116,15 +116,6 @@ module CarrierWave
           bucket: @aliyun_bucket
         }
         @oss_client = ::Aliyun::Oss::Client.new(@aliyun_access_id, @aliyun_access_key, opts)
-      end
-
-      def img_client
-        return @img_client if defined?(@img_client)
-        opts = {
-          host: "img-#{@aliyun_area}.aliyuncs.com",
-          bucket: @aliyun_bucket
-        }
-        @img_client = ::Aliyun::Oss::Client.new(@aliyun_access_id, @aliyun_access_key, opts)
       end
 
       def oss_upload_client
