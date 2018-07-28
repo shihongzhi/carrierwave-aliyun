@@ -93,9 +93,13 @@ module CarrierWave
       # 有效期 3600s
       def private_get_url(path, opts = {})
         path.sub!(PATH_PREFIX, '')
-        url = oss_client.bucket_get_object_share_link(path, 3600)
+        url = ''
         if opts[:thumb]
-          url += "&#{opts[:thumb][1..-1]}"
+          thumb_path = [path, opts[:thumb]].join('')
+          url = oss_client.bucket_get_object_share_link(thumb_path, 3600)
+          url.gsub!(/^([^?]+)\?([^?]+)\?([^?]+)$/, '\1?\2&\3') if url.count('?') == 2
+        else
+          url = oss_client.bucket_get_object_share_link(path, 3600)
         end
         url.gsub('http://', 'https://')
       end
